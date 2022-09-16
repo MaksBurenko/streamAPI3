@@ -1,5 +1,8 @@
 package streamAPI;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -16,6 +19,12 @@ public class Main {
         sc.close();
 
         int i =0;
+        Map<String, Integer> duplicates = list.stream()
+                        .collect(Collectors.toMap(x1 -> x1, (x1, x2) -> x1, i -> i++));
+
+
+/*
+        int i =0;
 //множество с дубликатами
         HashMap<String, Integer> duplicates = new HashMap<>();
 //множество для отслеживания повторяющихся элементов
@@ -29,20 +38,25 @@ public class Main {
                     //в этом случае добавляем его во множество дубликатов
                     duplicates.put(temp, i++);
                 }
-            }
+            }*/
             duplicates.entrySet().stream()
                     .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                     .map(Map.Entry::getKey)
                     .limit(10)
                     .forEach(System.out::println);
 
+
             //перебор буфера и удаление совпадений с дубликатами, на случай если дубликатов окажется меньше 10
+
             if (duplicates.size() < 10) {
-                Set<String> keys = duplicates.keySet();
-                for (String temp : bufer) {
-                    for (String key : keys) {
-                        if (temp.equals(key)){
-                            bufer.remove(temp);
+
+                Iterator<String> iteratorDuplicates = duplicates.keySet().iterator();
+                Iterator<String> iteratorBufer = bufer.iterator();
+
+                while (iteratorDuplicates.hasNext()) {
+                    while (iteratorBufer.hasNext()) {
+                        if (iteratorDuplicates.next().equals(iteratorBufer.next())){
+                            iteratorBufer.remove();
                         }
                     }
                 }
